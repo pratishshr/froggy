@@ -41,6 +41,14 @@ html
                     li
                       a(href='/projects') List
                       a(href='/projects/new') Create New
+              ul.nav.navbar-nav
+                li.dropdown
+                  a.dropdown-toggle(data-toggle='dropdown' href='#') Technology
+                    span.caret
+                  ul.dropdown-menu
+                    li
+                      a(href='/technologies') List
+                      a(href='/technologies/new') Create New
     #main.container
       block content
     block footer
