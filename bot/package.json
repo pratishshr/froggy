@@ -5,17 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "babel-node index.js --presets es2015",
+    "dev": "nodemon index.js --exec babel-node --presets es2015"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "node-wit": "^3.3.2"
+    "node-wit": "^3.3.2",
+    "request": "^2.72.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.10.1",
     "nodemon": "^1.9.2"
   }
 }
