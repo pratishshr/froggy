@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Foggy Resource
+    title Froggy Resource
     block meta
       meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1')
 
@@ -16,7 +16,7 @@ html
           nav.navbar.bg-success
             div.container-fluid
               div.navbar-header
-                a.navbar-brand(href='/') Foggy Resource
+                a.navbar-brand(href='/') Froggy Resource
               ul.nav.navbar-nav
                 li.dropdown
                   a.dropdown-toggle(data-toggle='dropdown' href='#') General Info
@@ -33,6 +33,14 @@ html
                     li
                       a(href='/vacancies') List
                       a(href='/vacancies/new') Create New
+              ul.nav.navbar-nav
+                li.dropdown
+                  a.dropdown-toggle(data-toggle='dropdown' href='#') Project
+                    span.caret
+                  ul.dropdown-menu
+                    li
+                      a(href='/projects') List
+                      a(href='/projects/new') Create New
     #main.container
       block content
     block footer
