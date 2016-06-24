@@ -1,9 +1,15 @@
 import * as facebookService from '../services/facebookService';
 import * as infoService from '../services/infoService';
+import * as vacancyService from '../services/vacancyService';
+import * as socketService from '../services/socketService';
 
 const actions = {
   say(sessionId, context, message, cb) {
-    facebookService.sendTextMessage(sessionId, message);
+    if (sessionId)
+      facebookService.sendTextMessage(sessionId, message);
+    else
+      socketService.postData(message);
+
     cb();
   },
   merge(sessionId, context, entities, message, cb) {
@@ -14,19 +20,38 @@ const actions = {
     console.log(error.message);
   },
   'fetchVacancies': (sessionId, context, cb) => {
-    // Here should go the api call, e.g.:
-    // context.forecast = apiCall(context.loc)
-    context.vacancies = 'ios developer, hawa developer';
-    cb(context);
-  },
-  'fetchLocation': (sessionId, context, cb) => {
-    infoService.fetchLocation().then((response)=> {
-      console.log(response);
-      context.location = response.data.general_infos[0].description;
+    vacancyService.fetchVacancies().then((response)=> {
+      if (response.data.vacancies.length) {
+        let vacancies = 'Vacancies: ';
+        response.data.vacancies.forEach((vacancy) => {
+          vacancies += '\n' + ' - ' + vacancy.position;
+        });
+        context.vacancies = vacancies + '\n' + 'More info:' + '\n' + 'https://resource-froggy.herokuapp.com/vacancies';
+      }
+      context.vacancyCount = response.data.vacancies.length;
       cb(context);
     });
   },
-  
+  'checkVacancy': (sessionId, context, cb) => {
+    console.log(context);
+    vacancyService.fetchVacanciesByPosition(context.technology).then((response) => {
+      if (response.data.vacancies.length) {
+        let vacancies = '\n Vacancies: ';
+        response.data.vacancies.forEach((vacancy) => {
+          vacancies += '\n' + ' - ' + vacancy.position;
+        });
+        context.vacancies = vacancies + '\n' + 'More info:' + '\n' + 'https://resource-froggy.herokuapp.com/vacancies';
+      }
+      context.vacancyCount = response.data.vacancies.length;
+      cb(context);
+    });
+  },
+  'fetchLocation': (sessionId, context, cb) => {
+    infoService.fetchLocation().then((response)=> {
+      context.location = response.data.general_infos[0].description;
+      cb(context);
+    });
+  }
 };
 
 export default actions;
