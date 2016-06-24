@@ -3,13 +3,14 @@ extends ../layout.jade
 block content
   div.row.text-center
     div.col-md-6.col-md-offset-3
-      h2 Add information
-  form.form-control-group(name='new_general_info' method='post' action='/info')
+      h2 Add Info
+  form.form-control-group(name='new_general_info' method='post' action='/infos' role='form')
     div.row
       div.col-md-6.col-md-offset-3
-        input.form-control(type='text' name='title' placeholder='title' required)
-        textarea.form-control(type='text' name='description' placeholder='description' required)
-    div.row.top-pad
-      div.col-md-6.col-md-offset-3
-        button.btn.btn-success.form-control(type='submit') Submit
-
+        div.form-group
+          label(for='general_info-title') Title
+          input.form-control(type='text' name='title' id='general_info-title' required)
+        div.form-group
+          label(for='general_info-description') Description
+          textarea.form-control(type='text' name='description' id='general_info-description' required)
+        button.btn.btn-success(type='submit') Submit
