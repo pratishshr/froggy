@@ -1,25 +1,32 @@
+import * as facebookService from '../services/facebookService';
+import * as infoService from '../services/infoService';
+
 const actions = {
   say(sessionId, context, message, cb) {
-    console.log(message);
+    facebookService.sendTextMessage(sessionId, message);
     cb();
   },
   merge(sessionId, context, entities, message, cb) {
     // Retrieve the location entity and store it into a context field
-    const loc = firstEntityValue(entities, 'location');
-    if (loc) {
-      context.loc = loc;
-    }
     cb(context);
   },
   error(sessionId, context, error) {
     console.log(error.message);
   },
-  'fetch-weather': (sessionId, context, cb) => {
+  'fetchVacancies': (sessionId, context, cb) => {
     // Here should go the api call, e.g.:
     // context.forecast = apiCall(context.loc)
-    context.forecast = 'sunny';
+    context.vacancies = 'ios developer, hawa developer';
     cb(context);
-  }
+  },
+  'fetchLocation': (sessionId, context, cb) => {
+    infoService.fetchLocation().then((response)=> {
+      console.log(response);
+      context.location = response.data.general_infos[0].description;
+      cb(context);
+    });
+  },
+  
 };
 
 export default actions;
