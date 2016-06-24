@@ -16,5 +16,11 @@
     "Information"
   ],
   "author": "shreeramneupane0@gmail.com",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^6.0.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^3.23.4",
+    "sequelize-cli": "^2.4.0"
+  }
 }
