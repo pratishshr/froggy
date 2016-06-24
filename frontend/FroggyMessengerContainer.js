@@ -6,6 +6,7 @@ Component,
 import {
 Linking,
 Platform,
+AsyncStorage,
 ActionSheetIOS,
 Dimensions,
 View,
@@ -30,90 +31,40 @@ class FroggyMessengerContainer extends Component {
     super(props);
 
     this._isMounted = false;
-    this._messages = this.getInitialMessages();
+
 
     this.state = {
+      messageLength           : 4,
+      allMessages             : [],
       messages                : this._messages,
       isLoadingEarlierMessages: false,
       typingMessage           : '',
       allLoaded               : false,
+      name                    : 'Froggy',
+      image                   : require('./assets/images/logo-small.png'),
+      position                : 'left',
+
     };
 
   }
 
   componentDidMount() {
-    console.log('ssss')
-
     this._isMounted = true;
+    var a = {name: 'bishal'};
+    var b = {age: '13'};
 
-    setTimeout(() => {
-      this.setState({
-        typingMessage: 'React-Bot is typing a message...',
-      });
-    }, 1000); // simulating network
-
-    setTimeout(() => {
-      this.setState({
-        typingMessage: '',
-      });
-    }, 3000); // simulating network
-
-
-    setTimeout(() => {
-      this.handleReceive({
-        text    : 'Hello Awesome Developer',
-        name    : 'React-Bot',
-        image   : {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-        position: 'left',
-        date    : new Date(),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      });
-    }, 3300); // simulating network
+    AsyncStorage.getItem('messages', (err, result) => {
+      result = JSON.parse(result)
+      var showMessages = result.slice(Math.max(result.length - 4, 0))
+      this.state.allMessages = result;
+      this.state.messageLength += 10;
+      this._messages = showMessages;
+      this.setState({messages: this._messages})
+    });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-  }
-
-  getInitialMessages() {
-    return [
-      {
-        text    : 'Are you building a chat app?',
-        name    : 'React-Bot',
-        image   : {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-        position: 'left',
-        date    : new Date(2016, 3, 14, 13, 0),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      },
-      {
-        text    : "Yes, and I use Gifted Messenger!",
-        name    : 'Awesome Developer',
-        image   : null,
-        position: 'right',
-        date    : new Date(2016, 3, 14, 13, 1),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      },
-    ];
-  }
-
-  setMessageStatus(uniqueId, status) {
-    let messages = [];
-    let found = false;
-
-    for (let i = 0; i < this._messages.length; i++) {
-      if (this._messages[i].uniqueId === uniqueId) {
-        let clone = Object.assign({}, this._messages[i]);
-        clone.status = status;
-        messages.push(clone);
-        found = true;
-      } else {
-        messages.push(this._messages[i]);
-      }
-    }
-
-    if (found === true) {
-      this.setMessages(messages);
-    }
   }
 
   setMessages(messages) {
@@ -126,95 +77,59 @@ class FroggyMessengerContainer extends Component {
   }
 
   handleSend(message = {}) {
-    console.log('ddsssssssssssssssssssssss')
-    fetch('http://10.10.11.199:3000/message/', {
-      method : 'GET',
+    message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+    console.log(message.text)
+    this.setMessages(this._messages.concat(message));
+    fetch('https://653a1654.ngrok.io/bot', {
+      method : 'POST',
       headers: {
-        'Accept'      : 'application/json',
         'Content-Type': 'application/json',
-      }
+      }, body: JSON.stringify({
+        message: message.text
+      })
     }).then((res) => {
       return res.json()
     }).then((response) => {
-      console.log(response)
+      let responseMessage = this.createMessage(response.message);
+      this.setMessages(this._messages.concat(responseMessage));
+      AsyncStorage.setItem('messages', JSON.stringify(this._messages));
     })
     .catch((err) => {
-      console.log(err)
-    }, null)
+      let index = this._messages.indexOf(message);
+      this._messages.splice(index, 1);
+      message.status = 'ErrorButton';
+      this.setMessages(this._messages.concat(message));
 
-    // Your logic here
-    // Send message.text to your server
+    })
+  }
 
-    message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
-    this.setMessages(this._messages.concat(message));
-
-    // mark the sent message as Seen
-    setTimeout(() => {
-      this.setMessageStatus(message.uniqueId, 'Seen'); // here you can replace 'Seen' by any string you want
-    }, 1000);
-
-    // if you couldn't send the message to your server :
-    // this.setMessageStatus(message.uniqueId, 'ErrorButton');
+  createMessage(text) {
+    return {
+      text    : text,
+      name    : this.state.name,
+      image   : this.state.image,
+      position: 'left',
+      date    : new Date(),
+      uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
+    }
   }
 
   onLoadEarlierMessages() {
-
-    // display a loader until you retrieve the messages from your server
-    this.setState({
-      isLoadingEarlierMessages: true,
-    });
-
-    // Your logic here
-    // Eg: Retrieve old messages from your server
-
-    // IMPORTANT
-    // Oldest messages have to be at the begining of the array
-    var earlierMessages = [
-      {
-        text    : 'React Native enables you to build world-class application experiences on native platforms using a consistent developer experience based on JavaScript and React. https://github.com/facebook/react-native',
-        name    : 'React-Bot',
-        image   : {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-        position: 'left',
-        date    : new Date(2016, 0, 1, 20, 0),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      }, {
-        text    : 'This is a touchable phone number 0606060606 parsed by taskrabbit/react-native-parsed-text',
-        name    : 'Awesome Developer',
-        image   : null,
-        position: 'right',
-        date    : new Date(2016, 0, 2, 12, 0),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      },
-    ];
-
-    setTimeout(() => {
-      this.setMessages(earlierMessages.concat(this._messages)); // prepend the earlier messages to your list
+    var showMessages = this.state.allMessages.slice(Math.max(this.state.allMessages.length - this.state.messageLength, 0))
+      this._messages = showMessages;
+      this.setMessages(showMessages); // prepend the earlier messages to your list
       this.setState({
-        isLoadingEarlierMessages: false, // hide the loader
-        allLoaded               : true, // hide the `Load earlier messages` button
+        allLoaded               : this.state.messageLength >= this.state.allMessages.length ? true: false  // hide the `Load earlier messages` button
       });
-    }, 1000); // simulating network
-
-  }
-
-  handleReceive(message = {}) {
-    // make sure that your message contains :
-    // text, name, image, position: 'left', date, uniqueId
-    this.setMessages(this._messages.concat(message));
+      this.state.messageLength += 10;
   }
 
   onErrorButtonPress(message = {}) {
-    // Your logic here
-    // re-send the failed message
+    let index = this._messages.indexOf(message);
+    this._messages.splice(index, 1);
+    message.status = '';
 
-    // remove the status
-    this.setMessageStatus(message.uniqueId, '');
-  }
-
-  // will be triggered when the Image of a row is touched
-  onImagePress(message = {}) {
-    // Your logic here
-    // Eg: Navigate to the user profile
+    this.handleSend(message);
   }
 
   render() {
@@ -225,7 +140,7 @@ class FroggyMessengerContainer extends Component {
     styles={{
           bubbleRight: {
             marginLeft: 70,
-            backgroundColor: '#007aff',
+            backgroundColor: '#6cc068',
           },
         }}
 
@@ -294,4 +209,5 @@ class FroggyMessengerContainer extends Component {
 }
 
 
-module.exports = FroggyMessengerContainer;
+module
+.exports = FroggyMessengerContainer;
