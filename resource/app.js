@@ -4,11 +4,21 @@ var express = require('express'),
 app = express(),
 port = 5000,
 
+jade = require('jade'),
 requireDir = require('require-dir'),
 bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
 
+/*
+ Template Engine
+ */
+app.set('views', './views');
+app.set('view engine', 'jade');
+
+/*
+ Middleware for all routes
+ */
 app.use(function (req, res, next) {
   if (req.method === 'OPTIONS') {
     var headers = {};
@@ -27,6 +37,10 @@ app.use(function (req, res, next) {
     next();
   }
 });
+
+/*
+ Route
+ */
 var routes = requireDir('./routes');
 for (var i in routes) app.use('/', routes[i]);
 
