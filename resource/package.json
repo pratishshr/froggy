@@ -1,9 +1,11 @@
 {
   "name": "froggy_resource",
   "version": "1.0.0",
-  "description": "Provide RESTful URL to interact with the resouce required for the bot.",
+  "description": "Interface to interact with foggy resources and Provide RESTful URL to fetch information required for the bot.",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
+    "dev-start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,8 +20,11 @@
   "author": "shreeramneupane0@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "nodemon": "^1.9.2",
     "pg": "^6.0.1",
     "pg-hstore": "^2.3.2",
+    "require-dir": "^0.3.0",
     "sequelize": "^3.23.4",
     "sequelize-cli": "^2.4.0"
   }
