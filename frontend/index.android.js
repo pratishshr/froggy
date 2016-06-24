@@ -6,22 +6,24 @@
 
 import React, { Component } from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  View
+AppRegistry,
+StyleSheet,
+Text,
+View
 } from 'react-native';
 var SplashScreen = require('@remobile/react-native-splashscreen');
+var FroggyMessengerContainer = require('./FroggyMessengerContainer');
 
 class froggy extends Component {
   componentDidMount() {
     setTimeout(() => SplashScreen.hide(), 2000);
   }
+
   render() {
     return (
-      <View>
-
-      </View>
+    <View>
+      <FroggyMessengerContainer/>
+    </View>
     );
   }
 }
