@@ -11,13 +11,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.10.1",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "http-status-codes": "^1.0.6",
     "node-wit": "^3.3.2",
-    "request": "^2.72.0"
+    "request": "^2.72.0",
+    "require-dir": "^0.3.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.10.1",
     "nodemon": "^1.9.2"
   }
 }
