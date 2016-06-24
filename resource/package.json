@@ -4,7 +4,7 @@
   "description": "Interface to interact with foggy resources and Provide RESTful URL to fetch information required for the bot.",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "babel-node app.js",
     "dev-start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,7 +20,12 @@
   "author": "shreeramneupane0@gmail.com",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.10.1",
     "body-parser": "^1.15.2",
+    "bootstrap": "^3.3.6",
+    "express": "^4.14.0",
+    "jade": "^1.11.0",
+    "jquery": "^3.0.0",
     "nodemon": "^1.9.2",
     "pg": "^6.0.1",
     "pg-hstore": "^2.3.2",
