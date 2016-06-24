@@ -50,11 +50,9 @@ class FroggyMessengerContainer extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    var a = {name: 'bishal'};
-    var b = {age: '13'};
 
     AsyncStorage.getItem('messages', (err, result) => {
-      result = JSON.parse(result)
+      result = result ? JSON.parse(result) : [];
       var showMessages = result.slice(Math.max(result.length - 4, 0))
       this.state.allMessages = result;
       this.state.messageLength += 10;
@@ -78,7 +76,6 @@ class FroggyMessengerContainer extends Component {
 
   handleSend(message = {}) {
     message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
-    console.log(message.text)
     this.setMessages(this._messages.concat(message));
     fetch('https://653a1654.ngrok.io/bot', {
       method : 'POST',
@@ -99,7 +96,6 @@ class FroggyMessengerContainer extends Component {
       this._messages.splice(index, 1);
       message.status = 'ErrorButton';
       this.setMessages(this._messages.concat(message));
-
     })
   }
 
@@ -110,18 +106,18 @@ class FroggyMessengerContainer extends Component {
       image   : this.state.image,
       position: 'left',
       date    : new Date(),
-      uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
+      uniqueId: Math.round(Math.random() * 10000)
     }
   }
 
   onLoadEarlierMessages() {
     var showMessages = this.state.allMessages.slice(Math.max(this.state.allMessages.length - this.state.messageLength, 0))
-      this._messages = showMessages;
-      this.setMessages(showMessages); // prepend the earlier messages to your list
-      this.setState({
-        allLoaded               : this.state.messageLength >= this.state.allMessages.length ? true: false  // hide the `Load earlier messages` button
-      });
-      this.state.messageLength += 10;
+    this._messages = showMessages;
+    this.setMessages(showMessages); // prepend the earlier messages to your list
+    this.setState({
+      allLoaded: this.state.messageLength >= this.state.allMessages.length ? true : false  // hide the `Load earlier messages` button
+    });
+    this.state.messageLength += 10;
   }
 
   onErrorButtonPress(message = {}) {
@@ -205,9 +201,7 @@ class FroggyMessengerContainer extends Component {
   handleEmailPress(email) {
     Communications.email(email, null, null, null, null);
   }
-
 }
-
 
 module
 .exports = FroggyMessengerContainer;
