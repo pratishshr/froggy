@@ -1,0 +1,34 @@
+doctype html
+html
+  head
+    title Foggy Resource
+    block meta
+      meta(name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1')
+
+    block styles
+      link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')
+      style(type='text/css')
+        |    #main { margin-top:30px; margin-bottom:30px; }
+  body
+    block header
+      div.row
+        div.col-md-6.col-md-offset-3
+          nav.navbar.bg-success
+            div.container-fluid
+              div.navbar-header
+                a.navbar-brand(href='/') Foggy Resource
+              ul.nav.navbar-nav
+                li.dropdown
+                  a.dropdown-toggle(data-toggle='dropdown' href='#') General Info
+                    span.caret
+                  ul.dropdown-menu
+                    li
+                      a(href='/infos') List
+                      a(href='/infos/new') Create New
+    #main.container
+      block content
+    block footer
+
+    block scripts
+      script(src='https://code.jquery.com/jquery-1.11.3.min.js')
+      script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js')
