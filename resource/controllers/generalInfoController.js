@@ -4,10 +4,10 @@ var HttpStatus = require('http-status-codes');
 
 var GeneralInfoService = require('../services/generalInfoService');
 
-module.exports = {
+var GeneralInfoController = {
 
   index: function (request, response) {
-    GeneralInfoService.list(request.query)
+    GeneralInfoService.list()
     .then(function (general_infos) {
       response.render('general_info/list.jade', general_infos)
     })
@@ -19,11 +19,13 @@ module.exports = {
   create: function (request, response) {
     var generalInfoParam = request.body;
     GeneralInfoService.create(generalInfoParam)
-    .then(function (data) {
-      response.status(HttpStatus.OK).json(data);
+    .then(function () {
+      response.redirect('/infos');
     })
     .catch(function (err) {
       response.render('general_info/new.jade').status(err.code || HttpStatus.BAD_REQUEST);
     });
   }
 };
+
+module.exports = GeneralInfoController;
