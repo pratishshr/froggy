@@ -34,7 +34,7 @@ const actions = {
   },
   'checkVacancy': (sessionId, context, cb) => {
     console.log(context);
-    vacancyService.fetchVacanciesByPosition(context.post).then((response) => {
+    vacancyService.fetchVacanciesByPosition(context.technology).then((response) => {
       if (response.data.vacancies.length) {
         let vacancies = '\n Vacancies: ';
         response.data.vacancies.forEach((vacancy) => {

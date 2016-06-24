@@ -41,6 +41,7 @@ export function receivedMessage(event) {
       default:
         console.log(messageText);
         witService.runActions(messageText, senderID);
+        break;
     }
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
