@@ -1,0 +1,20 @@
+{
+  "name": "froggy_resource",
+  "version": "1.0.0",
+  "description": "Provide RESTful URL to interact with the resouce required for the bot.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pratishshr/froggy/tree/dev/resource"
+  },
+  "keywords": [
+    "Froggy",
+    "Resource",
+    "Information"
+  ],
+  "author": "shreeramneupane0@gmail.com",
+  "license": "ISC"
+}
