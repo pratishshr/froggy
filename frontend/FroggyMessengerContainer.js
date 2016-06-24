@@ -14,6 +14,10 @@ Text,
 Navigator,
 } from 'react-native';
 
+import './UserAgent';
+
+var io = require('socket.io-client/socket.io');
+
 var GiftedMessenger = require('react-native-gifted-messenger');
 var Communications = require('react-native-communications');
 
@@ -29,6 +33,7 @@ class FroggyMessengerContainer extends Component {
 
   constructor(props) {
     super(props);
+    this.socket = io.connect('http://10.10.11.216:3000/', {jsonp: false});
 
     this._isMounted = false;
 
@@ -50,6 +55,23 @@ class FroggyMessengerContainer extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    var that = this;
+
+    this.socket.on('connect', function () {
+      console.log('ssssssss')
+      //that.socket.emit('login', {})
+    });
+
+    this.socket.on('serverMessage',  (msg) => {
+      // my msg
+      //console.log(response)
+      console.log(msg)
+      let response = msg;
+      let responseMessage = this.createMessage(response.message);
+      this.setMessages(this._messages.concat(responseMessage));
+      AsyncStorage.setItem('messages', JSON.stringify(this._messages));
+    });
+
 
     AsyncStorage.getItem('messages', (err, result) => {
       result = result ? JSON.parse(result) : [];
@@ -77,26 +99,27 @@ class FroggyMessengerContainer extends Component {
   handleSend(message = {}) {
     message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
     this.setMessages(this._messages.concat(message));
-    fetch('https://653a1654.ngrok.io/bot', {
-      method : 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      }, body: JSON.stringify({
-        message: message.text
-      })
-    }).then((res) => {
-      return res.json()
-    }).then((response) => {
-      let responseMessage = this.createMessage(response.message);
-      this.setMessages(this._messages.concat(responseMessage));
-      AsyncStorage.setItem('messages', JSON.stringify(this._messages));
-    })
-    .catch((err) => {
-      let index = this._messages.indexOf(message);
-      this._messages.splice(index, 1);
-      message.status = 'ErrorButton';
-      this.setMessages(this._messages.concat(message));
-    })
+    this.socket.emit('apiCall', message.text)
+    /*fetch('https://653a1654.ngrok.io/bot', {
+     method : 'POST',
+     headers: {
+     'Content-Type': 'application/json',
+     }, body: JSON.stringify({
+     message: message.text
+     })
+     }).then((res) => {
+     return res.json()
+     }).then((response) => {
+     let responseMessage = this.createMessage(response.message);
+     this.setMessages(this._messages.concat(responseMessage));
+     AsyncStorage.setItem('messages', JSON.stringify(this._messages));
+     })
+     .catch((err) => {
+     let index = this._messages.indexOf(message);
+     this._messages.splice(index, 1);
+     message.status = 'ErrorButton';
+     this.setMessages(this._messages.concat(message));
+     })*/
   }
 
   createMessage(text) {
