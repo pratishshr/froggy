@@ -5,15 +5,17 @@ app = express(),
 port = 5000,
 
 jade = require('jade'),
+path = require('path'),
 requireDir = require('require-dir'),
 bodyParser = require('body-parser');
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 /*
  Template Engine
  */
-app.set('views', './views');
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 /*

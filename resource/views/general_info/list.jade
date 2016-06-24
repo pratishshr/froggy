@@ -1,0 +1,18 @@
+extends ../layout.jade
+
+block content
+  div.row.text-center
+    div.col-md-6.col-md-offset-3
+      h2 General infos
+      table.table.table-striped
+        thead
+          tr
+            th #
+            th Title
+            th Description
+        tbody
+          for general_info in general_infos
+            tr
+              td #{general_infos.indexOf(general_info) + 1}
+              td #{general_info.dataValues.title}
+              td #{general_info.dataValues.description}
