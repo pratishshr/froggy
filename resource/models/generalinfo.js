@@ -16,7 +16,8 @@ module.exports = function (sequelize, DataTypes) {
 
       }
     },
-    underscored: true
+    underscored: true,
+    tableName: 'general_infos'
   });
   return GeneralInfo;
 };
