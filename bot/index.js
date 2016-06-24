@@ -1,11 +1,12 @@
-var express = require('express');
+const express = require('express');
+const bodyParser = require('body-parser');
 
-var app = express();
+const app = express();
 
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-var server = app.listen(4000, () => {
+const server = app.listen(4000, () => {
   console.log('Server running at port:' + server.address().port);
 });
