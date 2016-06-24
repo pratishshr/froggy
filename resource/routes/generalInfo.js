@@ -4,7 +4,7 @@ var express = require('express'),
 router = express.Router();
 
 router.get('/info/new', (req, res) => {
-  res.render('index.jade');
+  res.render('general_info/new.jade');
 });
 
 module.exports = router;
