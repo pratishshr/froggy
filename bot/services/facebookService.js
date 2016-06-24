@@ -1,4 +1,5 @@
 import request from 'request';
+import * as witService from '../services/witService';
 
 export function receivedMessage(event) {
   var senderID = event.sender.id;
@@ -8,7 +9,6 @@ export function receivedMessage(event) {
 
   console.log("Received message for user %d and page %d at %d with message:",
     senderID, recipientID, timeOfMessage);
-  console.log(JSON.stringify(message));
 
   var messageId = message.mid;
 
@@ -39,8 +39,7 @@ export function receivedMessage(event) {
         break;
 
       default:
-        
-        sendTextMessage(senderID, messageText);
+        witService.runActions(messageText, senderID);
     }
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
