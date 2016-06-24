@@ -1,7 +1,7 @@
 'use strict';
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   var Vacancy = sequelize.define('Vacancy', {
-    title: {
+    position: {
       allowNull: false,
       type: DataTypes.STRING
     },
@@ -13,10 +13,12 @@ module.exports = function(sequelize, DataTypes) {
     number_of_opening: DataTypes.INTEGER
   }, {
     classMethods: {
-      associate: function(models) {
+      associate: function (models) {
         // associations can be defined here
       }
-    }
+    },
+    underscored: true,
+    tableName: 'vacancies'
   });
   return Vacancy;
 };

@@ -25,6 +25,14 @@ html
                     li
                       a(href='/infos') List
                       a(href='/infos/new') Create New
+              ul.nav.navbar-nav
+                li.dropdown
+                  a.dropdown-toggle(data-toggle='dropdown' href='#') Vacancy
+                    span.caret
+                  ul.dropdown-menu
+                    li
+                      a(href='/vacancies') List
+                      a(href='/vacancies/new') Create New
     #main.container
       block content
     block footer

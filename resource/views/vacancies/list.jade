@@ -1,0 +1,22 @@
+extends ../layout.jade
+
+block content
+  div.row.text-center
+    div.col-md-8.col-md-offset-2
+      h2.text-success List of Vacancies
+      table.table.table-striped
+        thead
+          tr
+            th #
+            th Position
+            th Valid until
+            th Number of opening
+            th Description
+        tbody
+          for vacancy in vacancies
+            tr
+              td #{vacancies.indexOf(vacancy) + 1}
+              td #{vacancy.dataValues.position}
+              td #{vacancy.dataValues.valid_until.toDateString()}
+              td #{vacancy.dataValues.number_of_opening}
+              td #{vacancy.dataValues.description}
