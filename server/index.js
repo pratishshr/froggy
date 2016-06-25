@@ -9,6 +9,8 @@ var axios = require('axios');
 var socket = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
+var BOT_URL = 'https://bot-froggy.herokuapp.com';
+
 
 var backData;
 app.use(bodyParser.json());
@@ -30,7 +32,7 @@ socket.on('connection', function (client) {
     // socket.emit("serverMessage", "wit message");
     client.on("apiCall", function(data){
       socket.emit("messageSuccess", data);
-      axios.post('https://bot-froggy.herokuapp.com',{message: data});
+      axios.post(BOT_URL,{message: data});
     })
 
     client.on('disconnect', function () {
