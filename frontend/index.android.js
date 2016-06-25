@@ -11,12 +11,11 @@ StyleSheet,
 Text,
 View
 } from 'react-native';
-var SplashScreen = require('@remobile/react-native-splashscreen');
+
 var FroggyMessengerContainer = require('./FroggyMessengerContainer');
 
 class froggy extends Component {
   componentDidMount() {
-    SplashScreen.hide();
   }
 
   render() {

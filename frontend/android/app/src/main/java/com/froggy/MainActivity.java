@@ -3,7 +3,6 @@ package com.froggy;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
-import com.remobile.splashscreen.*;
 import ca.jaysoo.extradimensions.ExtraDimensionsPackage;
 
 import java.util.Arrays;
@@ -37,7 +36,6 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
-            new RCTSplashScreenPackage(this),
             new ExtraDimensionsPackage(this)
         );
     }
