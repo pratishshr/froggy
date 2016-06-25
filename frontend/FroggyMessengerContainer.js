@@ -1,17 +1,22 @@
 'use strict';
 
 import React, {
-Component,
+  Component,
 } from 'react';
 import {
-Linking,
-Platform,
-ActionSheetIOS,
-Dimensions,
-View,
-Text,
-Navigator,
+  Linking,
+  Platform,
+  AsyncStorage,
+  ActionSheetIOS,
+  Dimensions,
+  View,
+  Text,
+  Navigator,
 } from 'react-native';
+
+import './UserAgent';
+
+var io = require('socket.io-client/socket.io');
 
 var GiftedMessenger = require('react-native-gifted-messenger');
 var Communications = require('react-native-communications');
@@ -20,7 +25,9 @@ var Communications = require('react-native-communications');
 var STATUS_BAR_HEIGHT = Navigator.NavigationBar.Styles.General.StatusBarHeight;
 if (Platform.OS === 'android') {
   var ExtraDimensions = require('react-native-extra-dimensions-android');
-  var STATUS_BAR_HEIGHT = ExtraDimensions.get('STATUS_BAR_HEIGHT') - 10;
+  var STATUS_BAR_HEIGHT = ExtraDimensions.get('STATUS_BAR_HEIGHT') - 50;
+} else {
+  STATUS_BAR_HEIGHT -= 50;
 }
 
 
@@ -28,92 +35,58 @@ class FroggyMessengerContainer extends Component {
 
   constructor(props) {
     super(props);
+    this.socket = io.connect('http://10.10.11.216:3000/', {jsonp: false});
 
     this._isMounted = false;
-    this._messages = this.getInitialMessages();
+
 
     this.state = {
-      messages                : this._messages,
+      messageLength: 4,
+      allMessages: [],
+      messages: this._messages,
       isLoadingEarlierMessages: false,
-      typingMessage           : '',
-      allLoaded               : false,
+      typingMessage: '',
+      allLoaded: false,
+      name: 'Froggy',
+      image: require('./assets/images/logo-small.png'),
+      position: 'left',
+
     };
 
   }
 
   componentDidMount() {
-    console.log('ssss')
-
     this._isMounted = true;
+    var that = this;
 
-    setTimeout(() => {
-      this.setState({
-        typingMessage: 'React-Bot is typing a message...',
-      });
-    }, 1000); // simulating network
+    this.socket.on('connect', function () {
+      console.log('ssssssss')
+      //that.socket.emit('login', {})
+    });
 
-    setTimeout(() => {
-      this.setState({
-        typingMessage: '',
-      });
-    }, 3000); // simulating network
+    this.socket.on('serverMessage', (msg) => {
+      // my msg
+      //console.log(response)
+      console.log(msg)
+      let response = msg;
+      let responseMessage = this.createMessage(response.message);
+      this.setMessages(this._messages.concat(responseMessage));
+      AsyncStorage.setItem('messages', JSON.stringify(this._messages));
+    });
 
 
-    setTimeout(() => {
-      this.handleReceive({
-        text    : 'Hello Awesome Developer',
-        name    : 'React-Bot',
-        image   : {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-        position: 'left',
-        date    : new Date(),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      });
-    }, 3300); // simulating network
+    AsyncStorage.getItem('messages', (err, result) => {
+      result = result ? JSON.parse(result) : [];
+      var showMessages = result.slice(Math.max(result.length - 4, 0))
+      this.state.allMessages = result;
+      this.state.messageLength += 10;
+      this._messages = showMessages;
+      this.setState({messages: this._messages})
+    });
   }
 
   componentWillUnmount() {
     this._isMounted = false;
-  }
-
-  getInitialMessages() {
-    return [
-      {
-        text    : 'Are you building a chat app?',
-        name    : 'React-Bot',
-        image   : {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-        position: 'left',
-        date    : new Date(2016, 3, 14, 13, 0),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      },
-      {
-        text    : "Yes, and I use Gifted Messenger!",
-        name    : 'Awesome Developer',
-        image   : null,
-        position: 'right',
-        date    : new Date(2016, 3, 14, 13, 1),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      },
-    ];
-  }
-
-  setMessageStatus(uniqueId, status) {
-    let messages = [];
-    let found = false;
-
-    for (let i = 0; i < this._messages.length; i++) {
-      if (this._messages[i].uniqueId === uniqueId) {
-        let clone = Object.assign({}, this._messages[i]);
-        clone.status = status;
-        messages.push(clone);
-        found = true;
-      } else {
-        messages.push(this._messages[i]);
-      }
-    }
-
-    if (found === true) {
-      this.setMessages(messages);
-    }
   }
 
   setMessages(messages) {
@@ -126,132 +99,95 @@ class FroggyMessengerContainer extends Component {
   }
 
   handleSend(message = {}) {
-    console.log('ddsssssssssssssssssssssss')
-    fetch('http://10.10.11.199:3000/message/', {
-      method : 'GET',
-      headers: {
-        'Accept'      : 'application/json',
-        'Content-Type': 'application/json',
-      }
-    }).then((res) => {
-      return res.json()
-    }).then((response) => {
-      console.log(response)
-    })
-    .catch((err) => {
-      console.log(err)
-    }, null)
-
-    // Your logic here
-    // Send message.text to your server
-
     message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
     this.setMessages(this._messages.concat(message));
+    this.socket.emit('apiCall', message.text)
+    /*fetch('https://653a1654.ngrok.io/bot', {
+     method : 'POST',
+     headers: {
+     'Content-Type': 'application/json',
+     }, body: JSON.stringify({
+     message: message.text
+     })
+     }).then((res) => {
+     return res.json()
+     }).then((response) => {
+     let responseMessage = this.createMessage(response.message);
+     this.setMessages(this._messages.concat(responseMessage));
+     AsyncStorage.setItem('messages', JSON.stringify(this._messages));
+     })
+     .catch((err) => {
+     let index = this._messages.indexOf(message);
+     this._messages.splice(index, 1);
+     message.status = 'ErrorButton';
+     this.setMessages(this._messages.concat(message));
+     })*/
+  }
 
-    // mark the sent message as Seen
-    setTimeout(() => {
-      this.setMessageStatus(message.uniqueId, 'Seen'); // here you can replace 'Seen' by any string you want
-    }, 1000);
-
-    // if you couldn't send the message to your server :
-    // this.setMessageStatus(message.uniqueId, 'ErrorButton');
+  createMessage(text) {
+    return {
+      text: text,
+      name: this.state.name,
+      image: this.state.image,
+      position: 'left',
+      date: new Date(),
+      uniqueId: Math.round(Math.random() * 10000)
+    }
   }
 
   onLoadEarlierMessages() {
-
-    // display a loader until you retrieve the messages from your server
+    var showMessages = this.state.allMessages.slice(Math.max(this.state.allMessages.length - this.state.messageLength, 0))
+    this._messages = showMessages;
+    this.setMessages(showMessages); // prepend the earlier messages to your list
     this.setState({
-      isLoadingEarlierMessages: true,
+      allLoaded: this.state.messageLength >= this.state.allMessages.length ? true : false  // hide the `Load earlier messages` button
     });
-
-    // Your logic here
-    // Eg: Retrieve old messages from your server
-
-    // IMPORTANT
-    // Oldest messages have to be at the begining of the array
-    var earlierMessages = [
-      {
-        text    : 'React Native enables you to build world-class application experiences on native platforms using a consistent developer experience based on JavaScript and React. https://github.com/facebook/react-native',
-        name    : 'React-Bot',
-        image   : {uri: 'https://facebook.github.io/react/img/logo_og.png'},
-        position: 'left',
-        date    : new Date(2016, 0, 1, 20, 0),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      }, {
-        text    : 'This is a touchable phone number 0606060606 parsed by taskrabbit/react-native-parsed-text',
-        name    : 'Awesome Developer',
-        image   : null,
-        position: 'right',
-        date    : new Date(2016, 0, 2, 12, 0),
-        uniqueId: Math.round(Math.random() * 10000), // simulating server-side unique id generation
-      },
-    ];
-
-    setTimeout(() => {
-      this.setMessages(earlierMessages.concat(this._messages)); // prepend the earlier messages to your list
-      this.setState({
-        isLoadingEarlierMessages: false, // hide the loader
-        allLoaded               : true, // hide the `Load earlier messages` button
-      });
-    }, 1000); // simulating network
-
-  }
-
-  handleReceive(message = {}) {
-    // make sure that your message contains :
-    // text, name, image, position: 'left', date, uniqueId
-    this.setMessages(this._messages.concat(message));
+    this.state.messageLength += 10;
   }
 
   onErrorButtonPress(message = {}) {
-    // Your logic here
-    // re-send the failed message
+    let index = this._messages.indexOf(message);
+    this._messages.splice(index, 1);
+    message.status = '';
 
-    // remove the status
-    this.setMessageStatus(message.uniqueId, '');
-  }
-
-  // will be triggered when the Image of a row is touched
-  onImagePress(message = {}) {
-    // Your logic here
-    // Eg: Navigate to the user profile
+    this.handleSend(message);
   }
 
   render() {
     return (
-    <GiftedMessenger
-    ref={(c) => this._GiftedMessenger = c}
+      <GiftedMessenger
+        ref={(c) => this._GiftedMessenger = c}
 
-    styles={{
+        styles={{
           bubbleRight: {
             marginLeft: 70,
-            backgroundColor: '#007aff',
+            backgroundColor: '#6cc068',
           },
         }}
 
-    autoFocus={false}
-    messages={this.state.messages}
-    handleSend={this.handleSend.bind(this)}
-    onErrorButtonPress={this.onErrorButtonPress.bind(this)}
-    maxHeight={Dimensions.get('window').height - Navigator.NavigationBar.Styles.General.NavBarHeight - STATUS_BAR_HEIGHT}
+        autoFocus={false}
+        messages={this.state.messages}
+        handleSend={this.handleSend.bind(this)}
+        onErrorButtonPress={this.onErrorButtonPress.bind(this)}
+        maxHeight={Dimensions.get('window').height - Navigator.NavigationBar.Styles.General.NavBarHeight - STATUS_BAR_HEIGHT}
 
-    loadEarlierMessagesButton={!this.state.allLoaded}
-    onLoadEarlierMessages={this.onLoadEarlierMessages.bind(this)}
+        loadEarlierMessagesButton={!this.state.allLoaded}
+        onLoadEarlierMessages={this.onLoadEarlierMessages.bind(this)}
 
-    senderName='Awesome Developer'
-    senderImage={null}
-    onImagePress={this.onImagePress}
-    displayNames={true}
+        senderName='Awesome Developer'
+        senderImage={null}
+        onImagePress={this.onImagePress}
+        displayNames={true}
 
-    parseText={true} // enable handlePhonePress, handleUrlPress and handleEmailPress
-    handlePhonePress={this.handlePhonePress}
-    handleUrlPress={this.handleUrlPress}
-    handleEmailPress={this.handleEmailPress}
+        parseText={true} // enable handlePhonePress, handleUrlPress and handleEmailPress
+        handlePhonePress={this.handlePhonePress}
+        handleUrlPress={this.handleUrlPress}
+        handleEmailPress={this.handleEmailPress}
 
-    isLoadingEarlierMessages={this.state.isLoadingEarlierMessages}
+        isLoadingEarlierMessages={this.state.isLoadingEarlierMessages}
 
-    typingMessage={this.state.typingMessage}
-    />
+        typingMessage={this.state.typingMessage}
+      />
     );
   }
 
@@ -271,27 +207,26 @@ class FroggyMessengerContainer extends Component {
       var CANCEL_INDEX = 2;
 
       ActionSheetIOS.showActionSheetWithOptions({
-        options          : BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX
-      },
-      (buttonIndex) => {
-        switch (buttonIndex) {
-          case 0:
-            Communications.phonecall(phone, true);
-            break;
-          case 1:
-            Communications.text(phone);
-            break;
-        }
-      });
+          options: BUTTONS,
+          cancelButtonIndex: CANCEL_INDEX
+        },
+        (buttonIndex) => {
+          switch (buttonIndex) {
+            case 0:
+              Communications.phonecall(phone, true);
+              break;
+            case 1:
+              Communications.text(phone);
+              break;
+          }
+        });
     }
   }
 
   handleEmailPress(email) {
     Communications.email(email, null, null, null, null);
   }
-
 }
 
-
-module.exports = FroggyMessengerContainer;
+module
+  .exports = FroggyMessengerContainer;

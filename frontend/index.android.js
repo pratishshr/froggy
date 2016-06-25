@@ -16,7 +16,7 @@ var FroggyMessengerContainer = require('./FroggyMessengerContainer');
 
 class froggy extends Component {
   componentDidMount() {
-    setTimeout(() => SplashScreen.hide(), 2000);
+    SplashScreen.hide();
   }
 
   render() {

@@ -1,0 +1,16 @@
+extends ../layout.jade
+
+block content
+  div.row.text-center
+    div.col-md-8.col-md-offset-2
+      h2.text-success Technologies
+      table.table.table-striped
+        thead
+          tr
+            th #
+            th Name
+        tbody
+          for technology in technologies
+            tr
+              td #{technologies.indexOf(technology) + 1}
+              td #{technology}
