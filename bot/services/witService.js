@@ -25,7 +25,7 @@ export function runActions(message, sessionId) {
       if (error) {
         console.log('Oops! Got an error from Wit:', error);
       } else {
-        console.log('Waiting for futher messages.');
+        console.log('Waiting for further messages.');
       }
     }
   );
