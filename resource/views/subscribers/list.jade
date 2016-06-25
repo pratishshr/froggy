@@ -1,0 +1,18 @@
+extends ../layout.jade
+
+block content
+  div.row.text-center
+    div.col-md-8.col-md-offset-2
+      h2.text-success Subscribers
+      table.table.table-striped
+        thead
+          tr
+            th #
+            th Contact Info
+            th Subscribe Date
+        tbody
+          for subscriber in subscribers
+            tr
+              td #{subscribers.indexOf(subscriber) + 1}
+              td #{subscriber.dataValues.contact_info}
+              td #{subscriber.dataValues.created_at.toDateString()}
