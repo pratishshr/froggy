@@ -3,6 +3,7 @@ import * as infoService from '../services/infoService';
 import * as vacancyService from '../services/vacancyService';
 import * as socketService from '../services/socketService';
 import * as technologyService from '../services/technologyService';
+import * as subscriberService from '../services/subscriberService';
 
 const actions = {
   say(sessionId, context, message, cb) {
@@ -69,6 +70,11 @@ const actions = {
   'fetchContactNo': (sessionId, context, cb) => {
     infoService.fetchContactNo().then((response) => {
       context.contactNo = response.data.general_infos[0].description;
+      cb(context);
+    })
+  },
+  'saveEmail': (sessionId, context, cb) => {
+    subscriberService.saveContactInfo(context.email).then(() => {
       cb(context);
     })
   }
