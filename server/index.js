@@ -24,11 +24,13 @@ app.post('/value', function(req, rep){
 });
 
 socket.on('connection', function (client) {
-    console.log("ma kaha pugecha");
+
+
+    socket.emit("connectionSuccess", "You have been connected!");
     // socket.emit("serverMessage", "wit message");
     client.on("apiCall", function(data){
-      console.log(data);
-      axios.post('https://653a1654.ngrok.io/bot',{message: data});
+      socket.emit("messageSuccess", data);
+      axios.post('https://bot-froggy.herokuapp.com',{message: data});
     })
 
     client.on('disconnect', function () {
