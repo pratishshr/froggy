@@ -48,7 +48,7 @@ class FroggyMessengerContainer extends Component {
       name                    : 'Froggy',
       image                   : require('./assets/images/logo-small.png'),
       position                : 'left',
-      status                  : 'ErrorButton'
+      status                  : ''
     };
 
   }
@@ -59,16 +59,21 @@ class FroggyMessengerContainer extends Component {
       this.state.status = 'ErrorButton';
     });
 
-    this.socket.on('connect', ()=>{
+    this.socket.on('connect', ()=> {
       this.state.status = '';
+      console.log('dddddd')
     });
 
-    this.socket.on('disconnect', ()=>{
+    this.socket.on('disconnect', ()=> {
       this.state.status = 'ErrorButton';
+      setTimeout(() => {
+        this.socket = io.connect('https://server-froggy.herokuapp.com/', {jsonp: false});
+      }, 5000);
     });
 
     this.socket.on('serverMessage', (msg) => {
       let response = msg;
+      console.log('dddddd')
       let responseMessage = this.createMessage(response.message);
       this.state.typingMessage = '';
       this.setMessages(this._messages.concat(responseMessage));
@@ -77,6 +82,7 @@ class FroggyMessengerContainer extends Component {
 
     this.socket.on('messageSuccess', (data) => {
       if (this._messages[this._messages.length - 1].text == data) {
+        console.log('success');
         let message = Object.assign({}, this._messages[this._messages.length - 1]);
         this._messages.splice(this._messages.length - 1, 1);
         message.status = 'Seen';
