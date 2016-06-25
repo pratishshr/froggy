@@ -1,0 +1,22 @@
+extends ../layout.jade
+
+block content
+  div.text-center
+    div.col-md-8.col-md-offset-2
+      h2.text-success  Add Vacancy
+  form.form-control-group(name='new_vacancy' method='post' action='/vacancies' role='form')
+    div.col-md-8.col-md-offset-2
+      div.form-group
+        label(for='vacancy-position') Position
+        input.form-control(type='text' name='position' id='vacancy-position')
+      div.form-group
+        label(for='vacancy-valid_until') Valid Until
+        input.form-control(type='date' name='valid_until' id='vacancy-valid_until')
+      div.form-group
+        label(for='vacancy-number_of_opening') Number of Opening
+        input.form-control(type='number' name='number_of_opening' id='vacancy-number_of_opening' min='0')
+      div.form-group
+        label(for='vacancy-description') Description
+        textarea.form-control(type='text' name='description' id='vacancy-description' required)
+
+      button.btn.btn-success(type='submit') Submit

@@ -1,7 +1,7 @@
 "use strict";
 
 var GeneralInfoController = require('../controllers/generalInfoController');
-var GeneralInfoApiController = require('../controllers/generalInfoApiController');
+var GeneralInfoApiController = require('../apiControllers/generalInfoApiController');
 
 var express = require('express'),
 router = express.Router();

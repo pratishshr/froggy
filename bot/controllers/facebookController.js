@@ -13,7 +13,6 @@ export function validate(req, res) {
 }
 
 export function parseMessage(req, res) {
-  console.log(req.body.text);
   var data = req.body;
   // Make sure this is a page subscription
   if (data.object == 'page') {

@@ -39,7 +39,9 @@ export function receivedMessage(event) {
         break;
 
       default:
+        console.log(messageText);
         witService.runActions(messageText, senderID);
+        break;
     }
   } else if (messageAttachments) {
     sendTextMessage(senderID, "Message with attachment received");
@@ -70,7 +72,6 @@ export function callSendAPI(messageData) {
     if (!error && response.statusCode == 200) {
       var recipientId = body.recipient_id;
       var messageId = body.message_id;
-
       console.log("Successfully sent generic message with id %s to recipient %s",
         messageId, recipientId);
     } else {

@@ -1,0 +1,19 @@
+extends ../layout.jade
+
+block content
+  div.text-center
+    div.col-md-8.col-md-offset-2
+      h2.text-success  Add Project Detail
+  form.form-control-group(name='new_project' method='post' action='/projects' role='form')
+    div.col-md-8.col-md-offset-2
+      div.form-group
+        label(for='project-name') Name
+        input.form-control(type='text' name='name' id='project-name' required)
+      div.form-group
+        label(for='project-link') Link
+        input.form-control(type='text' name='link' id='project-link')
+      div.form-group
+        label(for='project-description') Description
+        textarea.form-control(type='text' name='description' id='project-description' required)
+
+      button.btn.btn-success(type='submit') Submit
