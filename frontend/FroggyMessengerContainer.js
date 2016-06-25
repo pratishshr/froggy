@@ -1,17 +1,17 @@
 'use strict';
 
 import React, {
-Component,
+  Component,
 } from 'react';
 import {
-Linking,
-Platform,
-AsyncStorage,
-ActionSheetIOS,
-Dimensions,
-View,
-Text,
-Navigator,
+  Linking,
+  Platform,
+  AsyncStorage,
+  ActionSheetIOS,
+  Dimensions,
+  View,
+  Text,
+  Navigator,
 } from 'react-native';
 
 import './UserAgent';
@@ -26,6 +26,8 @@ var STATUS_BAR_HEIGHT = Navigator.NavigationBar.Styles.General.StatusBarHeight;
 if (Platform.OS === 'android') {
   var ExtraDimensions = require('react-native-extra-dimensions-android');
   var STATUS_BAR_HEIGHT = ExtraDimensions.get('STATUS_BAR_HEIGHT') - 50;
+} else {
+  STATUS_BAR_HEIGHT -= 50;
 }
 
 
@@ -39,15 +41,15 @@ class FroggyMessengerContainer extends Component {
 
 
     this.state = {
-      messageLength           : 4,
-      allMessages             : [],
-      messages                : this._messages,
+      messageLength: 4,
+      allMessages: [],
+      messages: this._messages,
       isLoadingEarlierMessages: false,
-      typingMessage           : '',
-      allLoaded               : false,
-      name                    : 'Froggy',
-      image                   : require('./assets/images/logo-small.png'),
-      position                : 'left',
+      typingMessage: '',
+      allLoaded: false,
+      name: 'Froggy',
+      image: require('./assets/images/logo-small.png'),
+      position: 'left',
 
     };
 
@@ -62,7 +64,7 @@ class FroggyMessengerContainer extends Component {
       //that.socket.emit('login', {})
     });
 
-    this.socket.on('serverMessage',  (msg) => {
+    this.socket.on('serverMessage', (msg) => {
       // my msg
       //console.log(response)
       console.log(msg)
@@ -124,11 +126,11 @@ class FroggyMessengerContainer extends Component {
 
   createMessage(text) {
     return {
-      text    : text,
-      name    : this.state.name,
-      image   : this.state.image,
+      text: text,
+      name: this.state.name,
+      image: this.state.image,
       position: 'left',
-      date    : new Date(),
+      date: new Date(),
       uniqueId: Math.round(Math.random() * 10000)
     }
   }
@@ -153,39 +155,39 @@ class FroggyMessengerContainer extends Component {
 
   render() {
     return (
-    <GiftedMessenger
-    ref={(c) => this._GiftedMessenger = c}
+      <GiftedMessenger
+        ref={(c) => this._GiftedMessenger = c}
 
-    styles={{
+        styles={{
           bubbleRight: {
             marginLeft: 70,
             backgroundColor: '#6cc068',
           },
         }}
 
-    autoFocus={false}
-    messages={this.state.messages}
-    handleSend={this.handleSend.bind(this)}
-    onErrorButtonPress={this.onErrorButtonPress.bind(this)}
-    maxHeight={Dimensions.get('window').height - Navigator.NavigationBar.Styles.General.NavBarHeight - STATUS_BAR_HEIGHT}
+        autoFocus={false}
+        messages={this.state.messages}
+        handleSend={this.handleSend.bind(this)}
+        onErrorButtonPress={this.onErrorButtonPress.bind(this)}
+        maxHeight={Dimensions.get('window').height - Navigator.NavigationBar.Styles.General.NavBarHeight - STATUS_BAR_HEIGHT}
 
-    loadEarlierMessagesButton={!this.state.allLoaded}
-    onLoadEarlierMessages={this.onLoadEarlierMessages.bind(this)}
+        loadEarlierMessagesButton={!this.state.allLoaded}
+        onLoadEarlierMessages={this.onLoadEarlierMessages.bind(this)}
 
-    senderName='Awesome Developer'
-    senderImage={null}
-    onImagePress={this.onImagePress}
-    displayNames={true}
+        senderName='Awesome Developer'
+        senderImage={null}
+        onImagePress={this.onImagePress}
+        displayNames={true}
 
-    parseText={true} // enable handlePhonePress, handleUrlPress and handleEmailPress
-    handlePhonePress={this.handlePhonePress}
-    handleUrlPress={this.handleUrlPress}
-    handleEmailPress={this.handleEmailPress}
+        parseText={true} // enable handlePhonePress, handleUrlPress and handleEmailPress
+        handlePhonePress={this.handlePhonePress}
+        handleUrlPress={this.handleUrlPress}
+        handleEmailPress={this.handleEmailPress}
 
-    isLoadingEarlierMessages={this.state.isLoadingEarlierMessages}
+        isLoadingEarlierMessages={this.state.isLoadingEarlierMessages}
 
-    typingMessage={this.state.typingMessage}
-    />
+        typingMessage={this.state.typingMessage}
+      />
     );
   }
 
@@ -205,19 +207,19 @@ class FroggyMessengerContainer extends Component {
       var CANCEL_INDEX = 2;
 
       ActionSheetIOS.showActionSheetWithOptions({
-        options          : BUTTONS,
-        cancelButtonIndex: CANCEL_INDEX
-      },
-      (buttonIndex) => {
-        switch (buttonIndex) {
-          case 0:
-            Communications.phonecall(phone, true);
-            break;
-          case 1:
-            Communications.text(phone);
-            break;
-        }
-      });
+          options: BUTTONS,
+          cancelButtonIndex: CANCEL_INDEX
+        },
+        (buttonIndex) => {
+          switch (buttonIndex) {
+            case 0:
+              Communications.phonecall(phone, true);
+              break;
+            case 1:
+              Communications.text(phone);
+              break;
+          }
+        });
     }
   }
 
@@ -227,4 +229,4 @@ class FroggyMessengerContainer extends Component {
 }
 
 module
-.exports = FroggyMessengerContainer;
+  .exports = FroggyMessengerContainer;
