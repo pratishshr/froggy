@@ -33,7 +33,7 @@ class FroggyMessengerContainer extends Component {
 
   constructor(props) {
     super(props);
-    this.socket = io.connect('http://10.10.11.216:3000/', {jsonp: false});
+    this.socket = io.connect('https://server-froggy.herokuapp.com/', {jsonp: false});
 
     this._isMounted = false;
 
@@ -48,29 +48,42 @@ class FroggyMessengerContainer extends Component {
       name                    : 'Froggy',
       image                   : require('./assets/images/logo-small.png'),
       position                : 'left',
-
+      status                  : 'ErrorButton'
     };
 
   }
 
   componentDidMount() {
     this._isMounted = true;
-    var that = this;
-
-    this.socket.on('connect', function () {
-      console.log('ssssssss')
-      //that.socket.emit('login', {})
+    this.socket.on('connect', ()=> {
+      this.state.status = 'ErrorButton';
     });
 
-    this.socket.on('serverMessage',  (msg) => {
-      // my msg
-      //console.log(response)
-      console.log(msg)
+    this.socket.on('connect', ()=>{
+      this.state.status = '';
+    });
+
+    this.socket.on('disconnect', ()=>{
+      this.state.status = 'ErrorButton';
+    });
+
+    this.socket.on('serverMessage', (msg) => {
       let response = msg;
       let responseMessage = this.createMessage(response.message);
+      this.state.typingMessage = '';
       this.setMessages(this._messages.concat(responseMessage));
       AsyncStorage.setItem('messages', JSON.stringify(this._messages));
     });
+
+    this.socket.on('messageSuccess', (data) => {
+      if (this._messages[this._messages.length - 1].text == data) {
+        let message = Object.assign({}, this._messages[this._messages.length - 1]);
+        this._messages.splice(this._messages.length - 1, 1);
+        message.status = 'Seen';
+        this.state.typingMessage = 'Froggy is typing .....';
+        this.setMessages(this._messages.concat(message));
+      }
+    })
 
 
     AsyncStorage.getItem('messages', (err, result) => {
@@ -97,29 +110,10 @@ class FroggyMessengerContainer extends Component {
   }
 
   handleSend(message = {}) {
-    message.uniqueId = Math.round(Math.random() * 10000); // simulating server-side unique id generation
+    message.uniqueId = Math.round(Math.random() * 100000000); // simulating server-side unique id generation
+    message.status = this.state.status;
     this.setMessages(this._messages.concat(message));
     this.socket.emit('apiCall', message.text)
-    /*fetch('https://653a1654.ngrok.io/bot', {
-     method : 'POST',
-     headers: {
-     'Content-Type': 'application/json',
-     }, body: JSON.stringify({
-     message: message.text
-     })
-     }).then((res) => {
-     return res.json()
-     }).then((response) => {
-     let responseMessage = this.createMessage(response.message);
-     this.setMessages(this._messages.concat(responseMessage));
-     AsyncStorage.setItem('messages', JSON.stringify(this._messages));
-     })
-     .catch((err) => {
-     let index = this._messages.indexOf(message);
-     this._messages.splice(index, 1);
-     message.status = 'ErrorButton';
-     this.setMessages(this._messages.concat(message));
-     })*/
   }
 
   createMessage(text) {
@@ -129,7 +123,7 @@ class FroggyMessengerContainer extends Component {
       image   : this.state.image,
       position: 'left',
       date    : new Date(),
-      uniqueId: Math.round(Math.random() * 10000)
+      uniqueId: Math.round(Math.random() * 100000000)
     }
   }
 
