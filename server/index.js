@@ -9,7 +9,7 @@ var axios = require('axios');
 var socket = require('socket.io')(server);
 var port = process.env.PORT || 3000;
 
-var BOT_URL = 'https://bot-froggy.herokuapp.com';
+var BOT_URL = 'https://bot-froggy.herokuapp.com/bot';
 
 
 var backData;
