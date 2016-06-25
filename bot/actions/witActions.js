@@ -11,7 +11,6 @@ const actions = {
       facebookService.sendTextMessage(sessionId, message);
     else
       socketService.postData(message);
-
     cb();
   },
   merge(sessionId, context, entities, message, cb) {
@@ -23,9 +22,11 @@ const actions = {
     cb(context);
   },
   error(sessionId, context, error) {
+    console.log()
     console.log(error.message);
   },
   'fetchVacancies': (sessionId, context, cb) => {
+    console.log(context);
     vacancyService.fetchVacancies().then((response)=> {
       if (response.data.vacancies.length) {
         let vacancies = 'Vacancies: ';

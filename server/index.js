@@ -27,10 +27,11 @@ app.post('/value', function(req, rep){
 
 socket.on('connection', function (client) {
 
-
+    console.log("server");
     socket.emit("connectionSuccess", "You have been connected!");
     // socket.emit("serverMessage", "wit message");
     client.on("apiCall", function(data){
+      console.log("apiCall");
       socket.emit("messageSuccess", data);
       axios.post(BOT_URL,{message: data});
     })
